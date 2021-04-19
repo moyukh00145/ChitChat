@@ -112,12 +112,12 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if (s.toString().matches(".*([a-zA-Z].*[0-9]|[0-9].*[a-zA-Z]).*")) {
+                    if (s.toString().matches(".*([a-zA-Z].*[a-zA-Z]).*")) {
                         userlay.setError(null);
                         user = username.getText().toString().trim();
                         f1=true;
                     } else {
-                        userlay.setError("Username must contains alphabet and numeric");
+                        userlay.setError("Userame must contains alphabet");
                         f1=false;
                     }
                 }
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                            public void onComplete(@NonNull Task<AuthResult> task) {
                                if (task.isSuccessful()){
                                    dialog.dismiss();
-                                   FirebaseDatabase.getInstance().getReference("user/"+auth.getCurrentUser().getUid()).setValue(new user(username.getText().toString().trim(),email.getText().toString().trim(),auth.getCurrentUser().getUid(),"","",""));
+                                   FirebaseDatabase.getInstance().getReference("user/"+auth.getCurrentUser().getUid()).setValue(new user(username.getText().toString().trim(),email.getText().toString().trim(),auth.getCurrentUser().getUid(),"",""));
                                    Intent intent=new Intent(MainActivity.this,HomeActivity.class);
                                    startActivity(intent);
                                    MainActivity.this.finish();

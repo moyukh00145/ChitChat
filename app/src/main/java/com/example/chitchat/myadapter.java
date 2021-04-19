@@ -12,19 +12,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class myadapter extends RecyclerView.Adapter<myadapter.myholder> {
 
     ArrayList<user>list;
+    ArrayList<lastmessage>lastmessages;
     Context context;
     userClicked userClicked;
+    String ownuid,chat_room_id;
 
-    public myadapter(Context context,ArrayList<user> list,userClicked clicked) {
+    public myadapter(Context context,ArrayList<user> list,ArrayList<lastmessage>lastmessages,userClicked clicked) {
         this.context=context;
         this.list = list;
         this.userClicked=clicked;
+        this.lastmessages=lastmessages;
+
+        ownuid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+
     }
     interface userClicked{
         void onUserClicked(int position);
@@ -42,8 +50,24 @@ public class myadapter extends RecyclerView.Adapter<myadapter.myholder> {
     @Override
     public void onBindViewHolder(@NonNull myholder holder, int position) {
         holder.tv1.setText(list.get(position).getName());
-        holder.tv2.setText(list.get(position).getLastmsg());
         Glide.with(context).load(list.get(position).getImgurl()).placeholder(R.drawable.profile_logo).into(holder.imv);
+        String personuid=list.get(position).getUid();
+        if (personuid.compareTo(ownuid)>0){
+            chat_room_id=ownuid+personuid;
+        }
+        else if (personuid.compareTo(ownuid)==0){
+            chat_room_id=ownuid+personuid;
+        }
+        else{
+            chat_room_id=personuid+ownuid;
+        }
+        for (int i=0;i<lastmessages.size();i++){
+            lastmessage obj=lastmessages.get(i);
+            if (chat_room_id.equals(obj.getChatroomid())){
+                holder.tv2.setText(obj.getLastmsg());
+            }
+
+        }
 
     }
 

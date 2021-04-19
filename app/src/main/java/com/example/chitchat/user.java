@@ -4,16 +4,14 @@ public class user {
 
     private String name;
     private String email;
-    private String lastmsg;
     private String uid;
     private String imgurl;
     private String about;
 
-    public user(String name, String email, String uid,String lastmsg,String imgurl,String about) {
+    public user(String name, String email, String uid,String imgurl,String about) {
         this.name = name;
         this.email = email;
         this.uid = uid;
-        this.lastmsg=lastmsg;
         this.imgurl=imgurl;
         this.about=about;
     }
@@ -35,14 +33,6 @@ public class user {
 
     public void setImgurl(String imgurl) {
         this.imgurl = imgurl;
-    }
-
-    public String getLastmsg() {
-        return lastmsg;
-    }
-
-    public void setLastmsg(String lastmsg) {
-        this.lastmsg = lastmsg;
     }
 
     public String getName() {

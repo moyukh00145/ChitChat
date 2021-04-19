@@ -27,10 +27,11 @@ import java.util.ArrayList;
 public class HomeActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    LinearLayoutManager manager;
     ArrayList<user>list;
     ProgressBar progressBar;
     myadapter.userClicked userClicked;
+    myadapter myadapter;
+    ArrayList<lastmessage>lastmessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +43,25 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.GONE);
 
         list=new ArrayList<>();
+        lastmessages=new ArrayList<>();
 
         getUser();
 
         userClicked=new myadapter.userClicked() {
             @Override
             public void onUserClicked(int position) {
-                Toast.makeText(HomeActivity.this, list.get(position).getName(), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(HomeActivity.this,MessageActivity.class)
+                        .putExtra("chat_personname",list.get(position).getName())
+                        .putExtra("chat_person_image",list.get(position).getImgurl())
+                        .putExtra("chat_person_uid",list.get(position).getUid())
+                        .putExtra("own_uid",FirebaseAuth.getInstance().getCurrentUser().getUid())
+                );
             }
         };
+
+        myadapter=new myadapter(HomeActivity.this,list,lastmessages,userClicked);
+        recyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
+        recyclerView.setAdapter(myadapter);
     }
 
     @Override
@@ -87,9 +98,28 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        FirebaseDatabase.getInstance().getReference("user").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+        FirebaseDatabase.getInstance().getReference("lastmessages").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshot1:snapshot.getChildren()){
+                    lastmessages.add(snapshot1.getValue(lastmessage.class));
+                }
+
+                myadapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        FirebaseDatabase.getInstance().getReference("user").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
                 for (DataSnapshot snapshot1:snapshot.getChildren()){
                     if (!snapshot1.child("name").getValue().equals(name[0])){
                         list.add(snapshot1.getValue(user.class));
@@ -97,9 +127,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
                 }
-                myadapter myadapter=new myadapter(HomeActivity.this,list,userClicked);
-                recyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
-                recyclerView.setAdapter(myadapter);
+                myadapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
             }
@@ -109,5 +137,7 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 }

@@ -21,13 +21,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:cardCornerRadius="50dp">
+            app:cardCornerRadius="39dp"
+            android:layout_marginLeft="10dp">
             <ImageView
                 android:id="@+id/imageprofile"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:scaleType="centerCrop"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/profile_logo" />
+
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
@@ -48,8 +51,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="hgcyjchtfxtufcrt"
+                android:text=""
                 android:textSize="18dp"
+                android:maxLines="1"
                 android:id="@+id/lastmsg"/>
 
         </LinearLayout>

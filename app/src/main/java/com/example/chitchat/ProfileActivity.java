@@ -159,7 +159,8 @@ public class ProfileActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/imgurl").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue()!=null) {
+                if (!snapshot.getValue().toString().isEmpty()) {
+
                     Glide.with(ProfileActivity.this).load(snapshot.getValue().toString()).placeholder(R.drawable.profile_logo).into(imgPf);
                 }
             }
