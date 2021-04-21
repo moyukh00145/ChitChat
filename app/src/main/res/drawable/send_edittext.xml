@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="#FF5722"/>
+<!--    <solid android:color="#FF5722"/>-->
+    <solid android:color="#FFFFFF"/>
     <corners android:radius="25dp"/>
     <stroke android:dashGap="@dimen/cardview_default_elevation"/>
 

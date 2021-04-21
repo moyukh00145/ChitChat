@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
-    ArrayList<Message>message_list;
+    ArrayList<Message> message_list;
     Context context;
 
     public MessageAdapter(ArrayList<Message> message_list, Context context) {
@@ -28,8 +28,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     @NonNull
     @Override
     public MessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v=inflater.inflate(R.layout.message_layout,parent,false);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.message_layout, parent, false);
         return new MessageHolder(v);
     }
 
@@ -38,25 +38,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
         holder.chat.setText(message_list.get(position).message);
 
-        ConstraintLayout ccl=holder.ccl;
-        TextView tv=holder.chat;
-        if (message_list.get(position).sender.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+        ConstraintLayout ccl = holder.ccl;
+        TextView tv = holder.chat;
+        if (message_list.get(position).sender.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
             tv.setBackgroundResource(R.drawable.message_design2);
-
-            ConstraintSet constraintSet=new ConstraintSet();
+            ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(ccl);
-            constraintSet.clear(R.id.chat,ConstraintSet.LEFT);
-            constraintSet.connect(R.id.chat,ConstraintSet.RIGHT,R.id.msg_lay,ConstraintSet.RIGHT,0);
+            constraintSet.clear(R.id.chat, ConstraintSet.LEFT);
+            constraintSet.connect(R.id.chat, ConstraintSet.RIGHT, R.id.msg_lay, ConstraintSet.RIGHT, 0);
             constraintSet.applyTo(ccl);
 
-        }
-        else {
+        } else {
             tv.setBackgroundResource(R.drawable.message_design);
-            ConstraintSet constraintSet=new ConstraintSet();
+            ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(ccl);
-            constraintSet.clear(R.id.chat,ConstraintSet.RIGHT);
-            constraintSet.connect(R.id.chat,ConstraintSet.LEFT,R.id.msg_lay,ConstraintSet.LEFT,0);
+            constraintSet.clear(R.id.chat, ConstraintSet.RIGHT);
+            constraintSet.connect(R.id.chat, ConstraintSet.LEFT, R.id.msg_lay, ConstraintSet.LEFT, 0);
             constraintSet.applyTo(ccl);
 
 
@@ -69,7 +67,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         return message_list.size();
     }
 
-    class MessageHolder extends RecyclerView.ViewHolder{
+    class MessageHolder extends RecyclerView.ViewHolder {
         ConstraintLayout ccl;
         TextView chat;
 
@@ -77,8 +75,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
             super(itemView);
 
-            ccl=itemView.findViewById(R.id.msg_lay);
-            chat=itemView.findViewById(R.id.chat);
+            ccl = itemView.findViewById(R.id.msg_lay);
+            chat = itemView.findViewById(R.id.chat);
         }
     }
 

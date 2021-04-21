@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginHorizontal="10dp"
     android:layout_marginVertical="10dp"
     app:cardCornerRadius="10dp"
@@ -10,25 +10,26 @@
 
 
     <LinearLayout
+        android:id="@+id/single_lay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:background="#DDF118"
-        android:id="@+id/single_lay">
+        android:background="@drawable/singlerow_design"
+        android:orientation="horizontal">
 
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:cardCornerRadius="39dp"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="10dp"
+            app:cardCornerRadius="39dp">
+
             <ImageView
                 android:id="@+id/imageprofile"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:scaleType="centerCrop"
                 android:layout_weight="1"
+                android:scaleType="centerCrop"
                 app:srcCompat="@drawable/profile_logo" />
 
         </androidx.cardview.widget.CardView>
@@ -38,29 +39,29 @@
             android:layout_height="match_parent"
             android:layout_weight="5"
             android:orientation="vertical"
+            android:gravity="center"
             android:paddingHorizontal="20dp">
 
             <TextView
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="25dp"
-                android:text="Moyukh"
                 android:layout_marginBottom="15dp"
-                android:id="@+id/name"/>
+                android:text="Moyukh"
+                android:textColor="@android:color/black"
+                android:textSize="25dp" />
 
             <TextView
+                android:id="@+id/lastmsg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="18dp"
                 android:maxLines="1"
-                android:id="@+id/lastmsg"/>
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textSize="18dp" />
 
         </LinearLayout>
     </LinearLayout>
-
-
-
 
 
 </androidx.cardview.widget.CardView>
