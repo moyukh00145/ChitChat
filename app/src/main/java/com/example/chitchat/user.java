@@ -7,16 +7,26 @@ public class user {
     private String uid;
     private String imgurl;
     private String about;
+    private String token;
 
-    public user(String name, String email, String uid,String imgurl,String about) {
+    public user(String name, String email, String uid,String imgurl,String about,String token) {
         this.name = name;
         this.email = email;
         this.uid = uid;
         this.imgurl=imgurl;
         this.about=about;
+        this.token=token;
     }
 
     public user() {
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getAbout() {

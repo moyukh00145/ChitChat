@@ -32,15 +32,35 @@
                 app:srcCompat="@drawable/profile_logo" />
         </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/chat_person_name"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="15dp"
-            android:text="Name"
-            android:textColor="#fff"
-            android:textSize="27dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+
+            <TextView
+                android:id="@+id/chat_person_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:text="Name"
+                android:textColor="#fff"
+                android:textSize="27dp" />
+
+            <TextView
+                android:id="@+id/online"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="Online"
+                android:paddingLeft="5dp"
+                android:textColor="#fff" />
+
+
+        </LinearLayout>
+
 
 
     </LinearLayout>

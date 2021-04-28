@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.regex.Pattern;
 
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     boolean enter = false,f1=false,f2=false,f3=false;
     String user, password, mail;
     FirebaseAuth auth;
+    String token="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,11 +190,38 @@ public class MainActivity extends AppCompatActivity {
                            @Override
                            public void onComplete(@NonNull Task<AuthResult> task) {
                                if (task.isSuccessful()){
-                                   dialog.dismiss();
-                                   FirebaseDatabase.getInstance().getReference("user/"+auth.getCurrentUser().getUid()).setValue(new user(username.getText().toString().trim(),email.getText().toString().trim(),auth.getCurrentUser().getUid(),"",""));
-                                   Intent intent=new Intent(MainActivity.this,HomeActivity.class);
-                                   startActivity(intent);
-                                   MainActivity.this.finish();
+
+
+
+                                   FirebaseMessaging.getInstance().getToken()
+                                           .addOnCompleteListener(new OnCompleteListener<String>() {
+                                               @Override
+                                               public void onComplete(@NonNull Task<String> task) {
+                                                   if (!task.isSuccessful()) {
+                                                       Log.w("new error", "Fetching FCM registration token failed", task.getException());
+                                                       return;
+                                                   }
+
+                                                   // Get new FCM registration token
+                                                   token = task.getResult();
+
+                                                   // Log and toast
+                                                   Log.w("new Token", token);
+                                                   if (!token.isEmpty()){
+                                                       dialog.dismiss();
+                                                       FirebaseDatabase.getInstance().getReference("user/"+auth.getCurrentUser().getUid()).setValue(new user(username.getText().toString().trim(),email.getText().toString().trim(),auth.getCurrentUser().getUid(),"","",token));
+                                                       Intent intent=new Intent(MainActivity.this,HomeActivity.class);
+                                                       startActivity(intent);
+                                                       MainActivity.this.finish();
+                                                   }
+                                                   else{
+                                                       Toast.makeText(MainActivity.this, "User resistered but Firebase token generate failed!!...please try to login", Toast.LENGTH_LONG).show();
+                                                   }
+
+
+                                               }
+                                           });
+
                                }
                                else {
                                    dialog.dismiss();
@@ -255,5 +285,9 @@ public class MainActivity extends AppCompatActivity {
                 + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
                 + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
                 + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$").matcher(email).matches();
+    }
+    private void getToken(){
+
+
     }
 }

@@ -1,11 +1,13 @@
 package com.example.chitchat;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,12 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -29,8 +34,9 @@ public class MessageActivity extends AppCompatActivity {
     EditText chat_message;
     ProgressBar progressBar;
     ArrayList<Message> messages_list;
-    String chat_personname, chat_person_imageurl, chat_person_uid, own_uid, chat_room_id;
+    String chat_personname, chat_person_imageurl, chat_person_uid, own_uid, chat_room_id,token,myname;
     MessageAdapter adapter;
+    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,7 @@ public class MessageActivity extends AppCompatActivity {
         chat_message = findViewById(R.id.chat_edittext);
         progressBar = findViewById(R.id.chat_progressbar);
 
-
+        myname=getIntent().getStringExtra("myname");
         chat_personname = getIntent().getStringExtra("chat_personname");
         chat_person_imageurl = getIntent().getStringExtra("chat_person_image");
         chat_person_uid = getIntent().getStringExtra("chat_person_uid");
@@ -58,16 +64,44 @@ public class MessageActivity extends AppCompatActivity {
 
         messages_list = new ArrayList<>();
 
+        FirebaseDatabase.getInstance().getReference("user/"+chat_person_uid+"/token").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                token=snapshot.getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg = chat_message.getText().toString();
+                final String msg = chat_message.getText().toString().trim();
                 if (msg.isEmpty()) {
                     Toast.makeText(MessageActivity.this, "Please write something before send", Toast.LENGTH_SHORT).show();
                 } else {
 
                     FirebaseDatabase.getInstance().getReference("messages/" + chat_room_id).push().setValue(new Message(own_uid, chat_person_uid, chat_message.getText().toString()));
                     chat_message.setText("");
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            if (snapshot.getValue().toString().equals("false")){
+                                FcmNotificationsSender notificationsSender=new FcmNotificationsSender(token,myname,msg,getApplicationContext(),MessageActivity.this);
+                                notificationsSender.SendNotifications();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                 }
             }
         });
@@ -78,6 +112,27 @@ public class MessageActivity extends AppCompatActivity {
         message_view.setAdapter(adapter);
 
         createchatroom(chat_person_uid, own_uid);
+
+        reference=FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+chat_person_uid);
+        FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChildren()){
+                    FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(true);
+                }
+                else {
+                    HashMap<String ,Boolean>map=new HashMap<>();
+                    map.put(own_uid,true);
+                    map.put(chat_person_uid,false);
+                    FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id).setValue(map);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void createchatroom(String chat_person_uid, String own_uid) {
@@ -105,8 +160,8 @@ public class MessageActivity extends AppCompatActivity {
                 message_view.scrollToPosition(messages_list.size() - 1);
                 message_view.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
-                if (messages_list.size() > 0) {
-
+                if (messages_list.size() > 0)
+                {
                     FirebaseDatabase.getInstance().getReference("lastmessages/" + chat_room_id).setValue(new lastmessage(chat_room_id, messages_list.get(messages_list.size() - 1).message));
                 } else {
                     FirebaseDatabase.getInstance().getReference("lastmessages/" + chat_room_id).setValue(new lastmessage(chat_room_id, ""));
@@ -120,4 +175,32 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(false);
+        Log.w("Back pressed","Back pressed");
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPause() {
+        FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(false);
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(true);
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume() {
+        FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(true);
+        super.onResume();
+    }
+
+
+
 }

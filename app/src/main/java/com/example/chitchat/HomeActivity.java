@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -20,9 +22,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.okhttp.internal.DiskLruCache;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -32,6 +38,7 @@ public class HomeActivity extends AppCompatActivity {
     myadapter.userClicked userClicked;
     myadapter myadapter;
     ArrayList<lastmessage>lastmessages;
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +52,16 @@ public class HomeActivity extends AppCompatActivity {
         list=new ArrayList<>();
         lastmessages=new ArrayList<>();
 
+
+
+
         getUser();
 
         userClicked=new myadapter.userClicked() {
             @Override
             public void onUserClicked(int position) {
                 startActivity(new Intent(HomeActivity.this,MessageActivity.class)
+                        .putExtra("myname",name)
                         .putExtra("chat_personname",list.get(position).getName())
                         .putExtra("chat_person_image",list.get(position).getImgurl())
                         .putExtra("chat_person_uid",list.get(position).getUid())
@@ -86,11 +97,10 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     public void getUser(){
-        final String[] name = new String[1];
         FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/name").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                name[0] =snapshot.getValue().toString();
+                name=snapshot.getValue().toString();
             }
 
             @Override
@@ -121,7 +131,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.clear();
                 for (DataSnapshot snapshot1:snapshot.getChildren()){
-                    if (!snapshot1.child("name").getValue().equals(name[0])){
+                    if (!snapshot1.child("name").getValue().equals(name)){
                         list.add(snapshot1.getValue(user.class));
                     }
 

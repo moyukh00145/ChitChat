@@ -20,6 +20,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     ArrayList<Message> message_list;
     Context context;
 
+
+
     public MessageAdapter(ArrayList<Message> message_list, Context context) {
         this.message_list = message_list;
         this.context = context;
