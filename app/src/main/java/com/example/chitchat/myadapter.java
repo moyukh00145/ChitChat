@@ -23,19 +23,24 @@ public class myadapter extends RecyclerView.Adapter<myadapter.myholder> {
     ArrayList<lastmessage>lastmessages;
     Context context;
     userClicked userClicked;
+    longclicked longclicked;
     String ownuid,chat_room_id;
 
-    public myadapter(Context context,ArrayList<user> list,ArrayList<lastmessage>lastmessages,userClicked clicked) {
+    public myadapter(Context context,ArrayList<user> list,ArrayList<lastmessage>lastmessages,userClicked clicked,longclicked longclicked1) {
         this.context=context;
         this.list = list;
         this.userClicked=clicked;
         this.lastmessages=lastmessages;
+        this.longclicked=longclicked1;
 
         ownuid=FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     }
     interface userClicked{
         void onUserClicked(int position);
+    }
+    interface longclicked{
+        void onLongclick(int position);
     }
 
 
@@ -89,6 +94,13 @@ public class myadapter extends RecyclerView.Adapter<myadapter.myholder> {
                 @Override
                 public void onClick(View v) {
                     userClicked.onUserClicked(getAdapterPosition());
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    longclicked.onLongclick(getAdapterPosition());
+                    return false;
                 }
             });
         }

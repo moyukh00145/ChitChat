@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -67,7 +68,7 @@ public class MessageActivity extends AppCompatActivity {
             Glide.with(this).load(chat_person_imageurl).placeholder(R.drawable.profile_logo).into(chat_person_image);
         }
 
-        FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/online").setValue(true);
+        FirebaseDatabase .getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/online").setValue(true);
 
         FirebaseDatabase.getInstance().getReference("user/"+chat_person_uid+"/online").addValueEventListener(new ValueEventListener() {
             @Override
@@ -163,6 +164,11 @@ public class MessageActivity extends AppCompatActivity {
         show_about_clk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent intent=new Intent(MessageActivity.this,AboutActivity.class);
+                intent.putExtra("imgurl",chat_person_imageurl);
+                intent.putExtra("uid",chat_person_uid);
+                startActivity(intent);
 
             }
         });

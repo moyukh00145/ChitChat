@@ -36,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     ArrayList<user> list;
     ProgressBar progressBar;
     myadapter.userClicked userClicked;
+    myadapter.longclicked longclicked;
     myadapter myadapter;
     ArrayList<lastmessage> lastmessages;
     ArrayList<String> friends;
@@ -99,7 +100,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
 
-        myadapter = new myadapter(HomeActivity.this, list, lastmessages, userClicked);
+        longclicked=new myadapter.longclicked() {
+            @Override
+            public void onLongclick(int position) {
+
+            }
+        };
+
+        myadapter = new myadapter(HomeActivity.this, list, lastmessages, userClicked,longclicked);
         recyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
         recyclerView.setAdapter(myadapter);
     }
