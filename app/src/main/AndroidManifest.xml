@@ -11,7 +11,11 @@
         android:roundIcon="@drawable/logo5"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MessageActivity" android:theme="@style/AppTheme2" ></activity>
+        <activity android:name=".AboutActivity"></activity>
+        <activity android:name=".MyFriendsActivity" />
+        <activity
+            android:name=".MessageActivity"
+            android:theme="@style/AppTheme2" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".HomeActivity" />
         <activity
@@ -23,11 +27,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".FirebaseMessagingService"
+            android:directBootAware="true"
             android:exported="false"
-            android:permission="TODO"
-            android:directBootAware="true">
+            android:permission="TODO">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

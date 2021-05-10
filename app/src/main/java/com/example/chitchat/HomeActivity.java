@@ -33,74 +33,103 @@ import java.util.Arrays;
 public class HomeActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    ArrayList<user>list;
+    ArrayList<user> list;
     ProgressBar progressBar;
     myadapter.userClicked userClicked;
     myadapter myadapter;
-    ArrayList<lastmessage>lastmessages;
+    ArrayList<lastmessage> lastmessages;
+    ArrayList<String> friends;
     String name;
+    int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        progressBar=findViewById(R.id.progress_home);
-        recyclerView=findViewById(R.id.recycle_view);
+        progressBar = findViewById(R.id.progress_home);
+        recyclerView = findViewById(R.id.recycle_view);
         recyclerView.setVisibility(View.GONE);
 
-        list=new ArrayList<>();
-        lastmessages=new ArrayList<>();
+        list = new ArrayList<>();
+        lastmessages = new ArrayList<>();
+        friends = new ArrayList<>();
 
 
-
-
+        FirebaseDatabase.getInstance().getReference("user/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/online").setValue(true);
         getUser();
 
-        userClicked=new myadapter.userClicked() {
+        FirebaseDatabase.getInstance().getReference("user/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/online").setValue(true);
+
+        userClicked = new myadapter.userClicked() {
             @Override
             public void onUserClicked(int position) {
-                startActivity(new Intent(HomeActivity.this,MessageActivity.class)
-                        .putExtra("myname",name)
-                        .putExtra("chat_personname",list.get(position).getName())
-                        .putExtra("chat_person_image",list.get(position).getImgurl())
-                        .putExtra("chat_person_uid",list.get(position).getUid())
-                        .putExtra("own_uid",FirebaseAuth.getInstance().getCurrentUser().getUid())
-                );
+                pos=position;
+                FirebaseDatabase.getInstance().getReference("Friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        friends.clear();
+                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                            friends.add(snapshot1.getValue().toString());
+                        }
+                        if (!friends.contains(list.get(pos).getUid())){
+                            Intent return_to_friendsActivity = new Intent();
+                            FirebaseDatabase.getInstance().getReference("Friends/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue(list.get(pos).getUid());
+                            return_to_friendsActivity.putExtra("Name", list.get(pos).getName());
+                            setResult(RESULT_OK, return_to_friendsActivity);
+                            HomeActivity.this.finish();
+                        }
+                        else{
+
+                            Intent return_to_friendsActivity = new Intent();
+                            setResult(5, return_to_friendsActivity);
+                            HomeActivity.this.finish();
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+
             }
         };
 
-        myadapter=new myadapter(HomeActivity.this,list,lastmessages,userClicked);
+        myadapter = new myadapter(HomeActivity.this, list, lastmessages, userClicked);
         recyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
         recyclerView.setAdapter(myadapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile,menu);
+        getMenuInflater().inflate(R.menu.profile, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId()==R.id.pf){
-            Intent intent=new Intent(HomeActivity.this,ProfileActivity.class);
+        if (item.getItemId() == R.id.pf) {
+            Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
             startActivity(intent);
-        }
-        else if (item.getItemId()==R.id.signout){
+        } else if (item.getItemId() == R.id.signout) {
             FirebaseAuth.getInstance().signOut();
-            Intent intent=new Intent(HomeActivity.this,MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
-    public void getUser(){
-        FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/name").addListenerForSingleValueEvent(new ValueEventListener() {
+
+    public void getUser() {
+        FirebaseDatabase.getInstance().getReference("user/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/name").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                name=snapshot.getValue().toString();
+                name = snapshot.getValue().toString();
             }
 
             @Override
@@ -113,7 +142,7 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("lastmessages").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1:snapshot.getChildren()){
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     lastmessages.add(snapshot1.getValue(lastmessage.class));
                 }
 
@@ -130,8 +159,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.clear();
-                for (DataSnapshot snapshot1:snapshot.getChildren()){
-                    if (!snapshot1.child("name").getValue().equals(name)){
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    if (!snapshot1.child("name").getValue().equals(name)) {
                         list.add(snapshot1.getValue(user.class));
                     }
 
@@ -150,4 +179,33 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
+
+
+//    @Override
+//    public void onBackPressed() {
+//        FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/online").setValue(false);
+//        Log.w("Back pressed","Back pressed");
+//        super.onBackPressed();
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/online").setValue(false);
+//        Log.w("pause","pause");
+//        super.onPause();
+//    }
+//
+//    @Override
+//    protected void onRestart() {
+//        FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/online").setValue(true);
+//        Log.w("restart","restart");
+//        super.onRestart();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/online").setValue(true);
+//        Log.w("resume","resume");
+//        super.onResume();
+//    }
 }

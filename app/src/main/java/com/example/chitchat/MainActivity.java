@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         auth=FirebaseAuth.getInstance();
 
         if (auth.getCurrentUser()!=null){
-            Intent intent =new Intent(MainActivity.this,HomeActivity.class);
+            Intent intent =new Intent(MainActivity.this,MyFriendsActivity.class);
             startActivity(intent);
             MainActivity.this.finish();
         }
@@ -209,8 +209,8 @@ public class MainActivity extends AppCompatActivity {
                                                    Log.w("new Token", token);
                                                    if (!token.isEmpty()){
                                                        dialog.dismiss();
-                                                       FirebaseDatabase.getInstance().getReference("user/"+auth.getCurrentUser().getUid()).setValue(new user(username.getText().toString().trim(),email.getText().toString().trim(),auth.getCurrentUser().getUid(),"","",token));
-                                                       Intent intent=new Intent(MainActivity.this,HomeActivity.class);
+                                                       FirebaseDatabase.getInstance().getReference("user/"+auth.getCurrentUser().getUid()).setValue(new user(username.getText().toString().trim(),email.getText().toString().trim(),auth.getCurrentUser().getUid(),"","",token,true));
+                                                       Intent intent=new Intent(MainActivity.this,MyFriendsActivity.class);
                                                        startActivity(intent);
                                                        MainActivity.this.finish();
                                                    }
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                            public void onComplete(@NonNull Task<AuthResult> task) {
                                if (task.isSuccessful()){
                                    dialog.dismiss();
-                                   Intent intent=new Intent(MainActivity.this,HomeActivity.class);
+                                   Intent intent=new Intent(MainActivity.this,MyFriendsActivity.class);
                                    startActivity(intent);
                                    MainActivity.this.finish();
                                }

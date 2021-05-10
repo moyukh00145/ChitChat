@@ -8,17 +8,27 @@ public class user {
     private String imgurl;
     private String about;
     private String token;
+    private boolean online;
 
-    public user(String name, String email, String uid,String imgurl,String about,String token) {
+    public user(String name, String email, String uid,String imgurl,String about,String token,boolean online) {
         this.name = name;
         this.email = email;
         this.uid = uid;
         this.imgurl=imgurl;
         this.about=about;
         this.token=token;
+        this.online=online;
     }
 
     public user() {
+    }
+
+    public boolean getOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 
     public String getToken() {

@@ -11,11 +11,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,8 +30,8 @@ import java.util.HashMap;
 
 public class MessageActivity extends AppCompatActivity {
 
-    ImageView chat_person_image, send_btn;
-    TextView chat_person_name;
+    ImageView chat_person_image, send_btn,backbtn;
+    TextView chat_person_name,online;
     RecyclerView message_view;
     EditText chat_message;
     ProgressBar progressBar;
@@ -37,6 +39,7 @@ public class MessageActivity extends AppCompatActivity {
     String chat_personname, chat_person_imageurl, chat_person_uid, own_uid, chat_room_id,token,myname;
     MessageAdapter adapter;
     DatabaseReference reference;
+    LinearLayout show_about_clk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,9 @@ public class MessageActivity extends AppCompatActivity {
         message_view = findViewById(R.id.chat_recycleview);
         chat_message = findViewById(R.id.chat_edittext);
         progressBar = findViewById(R.id.chat_progressbar);
+        backbtn=findViewById(R.id.backbtn);
+        online=findViewById(R.id.online);
+        show_about_clk=findViewById(R.id.show_about);
 
         myname=getIntent().getStringExtra("myname");
         chat_personname = getIntent().getStringExtra("chat_personname");
@@ -60,6 +66,25 @@ public class MessageActivity extends AppCompatActivity {
         if (!chat_person_imageurl.isEmpty()) {
             Glide.with(this).load(chat_person_imageurl).placeholder(R.drawable.profile_logo).into(chat_person_image);
         }
+
+        FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/online").setValue(true);
+
+        FirebaseDatabase.getInstance().getReference("user/"+chat_person_uid+"/online").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue().toString().equals("true")){
+                    online.setText("Online");
+                }
+                else{
+                    online.setText("");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
         messages_list = new ArrayList<>();
@@ -117,6 +142,7 @@ public class MessageActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 if (snapshot.hasChildren()){
                     FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(true);
                 }
@@ -131,6 +157,20 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+
+        show_about_clk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        backbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }
@@ -186,18 +226,57 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(false);
+        FirebaseDatabase.getInstance().getReference("user/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/online").setValue(false);
         super.onPause();
     }
 
     @Override
     protected void onRestart() {
-        FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(true);
+        FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (snapshot.hasChildren()){
+                    FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(true);
+                }
+                else {
+                    HashMap<String ,Boolean>map=new HashMap<>();
+                    map.put(own_uid,true);
+                    map.put(chat_person_uid,false);
+                    FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id).setValue(map);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         super.onRestart();
     }
 
     @Override
     protected void onResume() {
-        FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(true);
+        FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (snapshot.hasChildren()){
+                    FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id+"/"+own_uid).setValue(true);
+                }
+                else {
+                    HashMap<String ,Boolean>map=new HashMap<>();
+                    map.put(own_uid,true);
+                    map.put(chat_person_uid,false);
+                    FirebaseDatabase.getInstance().getReference("seen/"+chat_room_id).setValue(map);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         super.onResume();
     }
 
