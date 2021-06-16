@@ -18,12 +18,12 @@ This is a simple chatting app where you can talk with your friends and family.Yo
 
 ## Images
 Here is the images of the app<br/>
-<img src="https://user-images.githubusercontent.com/52436728/122284793-936e4780-cf0b-11eb-9c38-26a820db82c4.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://user-images.githubusercontent.com/52436728/122284927-b993e780-cf0b-11eb-8ee8-90acce7119f3.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://user-images.githubusercontent.com/52436728/122284971-cb758a80-cf0b-11eb-83be-396c791496b5.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://user-images.githubusercontent.com/52436728/122285018-d5978900-cf0b-11eb-982a-589ae995dbc7.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://user-images.githubusercontent.com/52436728/122285060-dfb98780-cf0b-11eb-9f90-ea5f5879c0af.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://user-images.githubusercontent.com/52436728/122285102-ecd67680-cf0b-11eb-8caf-985014bb17e6.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://user-images.githubusercontent.com/52436728/122284793-936e4780-cf0b-11eb-9c38-26a820db82c4.jpeg" width="220" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://user-images.githubusercontent.com/52436728/122284927-b993e780-cf0b-11eb-8ee8-90acce7119f3.jpeg" width="220" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://user-images.githubusercontent.com/52436728/122284971-cb758a80-cf0b-11eb-83be-396c791496b5.jpeg" width="220" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://user-images.githubusercontent.com/52436728/122285018-d5978900-cf0b-11eb-982a-589ae995dbc7.jpeg" width="220" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://user-images.githubusercontent.com/52436728/122285060-dfb98780-cf0b-11eb-9f90-ea5f5879c0af.jpeg" width="220" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://user-images.githubusercontent.com/52436728/122285102-ecd67680-cf0b-11eb-8caf-985014bb17e6.jpeg" width="220" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 ## Download
 You can download the app from this [Link](https://github.com/moyukh00145/ChitChat/blob/master/app/src/apk/app-debug.apk?raw=true)
