@@ -17,7 +17,7 @@ Chit Chat is a chatting application which is bassed on Firebase real Time Databa
 This is a simple chatting app where you can talk with your friends and family.You can also customize with whom you talk most freequently.It can also show you up the missing text through notification.
 
 ## Images
-Here is the images of the app
+Here is the images of the app<br/>
 <img src="https://user-images.githubusercontent.com/52436728/122284793-936e4780-cf0b-11eb-9c38-26a820db82c4.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://user-images.githubusercontent.com/52436728/122284927-b993e780-cf0b-11eb-8ee8-90acce7119f3.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://user-images.githubusercontent.com/52436728/122284971-cb758a80-cf0b-11eb-83be-396c791496b5.jpeg" width="200" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
